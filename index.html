@@ -48,10 +48,6 @@
   <!-- App Styling -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
   <link rel="stylesheet" href="styles/main.css">
-
-  <script src="http://code.responsivevoice.org/responsivevoice.js"></script>
-
-
 </head>
 <body>
 <div class="demo-layout mdl-layout mdl-js-layout mdl-layout--fixed-header">
@@ -115,20 +111,28 @@
 <!-- ***********************************************************************************************************************
      * TODO(DEVELOPER): Paste the initialization snippet from: Firebase Console > Overview > Add Firebase to your web app. *
      *********************************************************************************************************************** -->
-
+<script src="scripts/main.js"></script>
 <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
 <script>
- // Initialize Firebase
- var config = {
-   apiKey: "AIzaSyDdRKxVN2PQ3SjFqVRNhEP9fQXILhsd1HA",
-   authDomain: "hackchat-2f2cd.firebaseapp.com",
-   databaseURL: "https://hackchat-2f2cd.firebaseio.com",
-   storageBucket: "hackchat-2f2cd.appspot.com",
-   messagingSenderId: "1011765904157"
- };
- firebase.initializeApp(config);
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCgr79vGh0titwpb3SCrEagfkKOAW1sdpI",
+    authDomain: "hackchat-1810b.firebaseapp.com",
+    databaseURL: "https://hackchat-1810b.firebaseio.com",
+    storageBucket: "hackchat-1810b.appspot.com",
+    messagingSenderId: "554002971780"
+  };
+  firebase.initializeApp(config);
 </script>
-
-<script src="scripts/main.js"></script>
+<div class="dropdown">
+  <button class="dropbtn">Select Language</button>
+  <div class="dropdown-content">
+    <a href="#">English</a>
+    <a href="#">French</a>
+    <a href="#">Spanish</a>
+    <a href="#">Chinese</a>
+    <a href="#">German</a>
+  </div>
+</div>
 </body>
 </html>
