@@ -34,21 +34,32 @@ MicrophoneSample.prototype.getMicrophoneInput = function () {
 
 MicrophoneSample.prototype.onStream = function (stream) {
     var input = context.createMediaStreamSource(stream);
-    var filter = context.createBiquadFilter();
-    filter.frequency.value = 60.0;
-    filter.type = filter.allpass;
-    filter.Q = 10.0;
+    //var filter = context.createBiquadFilter();
+    //filter.frequency.value = 60.0;
+    //filter.type = filter.allpass;
+    //filter.Q = 50.0;
 
     var analyser = context.createAnalyser();
+    analyser.minDecibels = -130;
+    analyser.maxDecibels = -10;
 
+    analyser.fftSize = 512;
     // Connect graph.
-    input.connect(filter);
-    filter.connect(analyser);
+    input.connect(analyser);
+  //  filter.connect(analyser);
 
     this.analyser = analyser;
+    NumOfBins = analyser.frequencyBinCount;
 
+   
+    line = d3.line()
+             .curve(d3.curveBasis)
+             .x(function (d, i) { return x(i); })
+             .y(function (d) { return y(d); });
 
-
+    hueScale = d3.scaleLinear()
+               .domain([0, NumOfBins - 1])
+               .range([180, 240]);
 
     // Setup a timer to visualize some stuff.
     requestAnimFrame(this.visualize.bind(this));
@@ -72,7 +83,7 @@ var line = d3.line()
 
 var hueScale = d3.scaleLinear()
            .domain([0, NumOfBins-1])
-           .range([0, 360]);
+           .range([180, 240]);
 
 MicrophoneSample.prototype.visualize = function () {
 
@@ -81,7 +92,7 @@ MicrophoneSample.prototype.visualize = function () {
 
 
     var x = d3.scaleLinear()
-   .domain([0, times.length])
+   .domain([0, times.length-1])
    .range([0, width]);
 
    
@@ -109,7 +120,7 @@ MicrophoneSample.prototype.visualize = function () {
 
     bar.append("rect")
         .attr("x", 1)
-        .attr("width", x(1)- 1)
+        .attr("width", x(1))
         .attr("height", function (d) { return height - y(d+100); })
     .attr("fill", function (d, i) { return d3.hsl(hueScale(i), 1, 0.5) });
 
