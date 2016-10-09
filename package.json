@@ -1,14 +1,23 @@
 {
-  "name": "web",
+  "name": "hackchat",
   "version": "1.0.0",
-  "description": "This folder contains the final code of the [Firebase: Build a Real Time Web Chat App Codelab](https://codelabs.developers.google.com/codelabs/firebase-web/).",
+  "description": "",
   "main": "index.js",
+  "dependencies": {
+    "axios": "^0.14.0"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Khyteang/HackChat.git"
+  },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "axios": "^0.14.0"
-  }
+  "bugs": {
+    "url": "https://github.com/Khyteang/HackChat/issues"
+  },
+  "homepage": "https://github.com/Khyteang/HackChat#readme"
 }

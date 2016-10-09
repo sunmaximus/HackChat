@@ -20,70 +20,24 @@ const translateText_API = `https://www.googleapis.com/language/translate/v2?key=
 const detectLanguage_API = `https://www.googleapis.com/language/translate/v2/detect?key=${API_KEY}`;
 
 var isMicOn = false;
-
+var targetLanguage = "en";
+var targetSpeechSpeaker = "US English Female";
 var langs =
-[['Afrikaans',       ['af-ZA']],
- ['Bahasa Indonesia',['id-ID']],
- ['Bahasa Melayu',   ['ms-MY']],
- ['Català',          ['ca-ES']],
- ['Čeština',         ['cs-CZ']],
- ['Deutsch',         ['de-DE']],
- ['English',         ['en-AU', 'Australia'],
-                     ['en-CA', 'Canada'],
-                     ['en-IN', 'India'],
-                     ['en-NZ', 'New Zealand'],
-                     ['en-ZA', 'South Africa'],
-                     ['en-GB', 'United Kingdom'],
-                     ['en-US', 'United States']],
- ['Español',         ['es-AR', 'Argentina'],
-                     ['es-BO', 'Bolivia'],
-                     ['es-CL', 'Chile'],
-                     ['es-CO', 'Colombia'],
-                     ['es-CR', 'Costa Rica'],
-                     ['es-EC', 'Ecuador'],
-                     ['es-SV', 'El Salvador'],
-                     ['es-ES', 'España'],
-                     ['es-US', 'Estados Unidos'],
-                     ['es-GT', 'Guatemala'],
-                     ['es-HN', 'Honduras'],
-                     ['es-MX', 'México'],
-                     ['es-NI', 'Nicaragua'],
-                     ['es-PA', 'Panamá'],
-                     ['es-PY', 'Paraguay'],
-                     ['es-PE', 'Perú'],
-                     ['es-PR', 'Puerto Rico'],
-                     ['es-DO', 'República Dominicana'],
-                     ['es-UY', 'Uruguay'],
-                     ['es-VE', 'Venezuela']],
- ['Euskara',         ['eu-ES']],
- ['Français',        ['fr-FR']],
- ['Galego',          ['gl-ES']],
- ['Hrvatski',        ['hr_HR']],
- ['IsiZulu',         ['zu-ZA']],
- ['Íslenska',        ['is-IS']],
- ['Italiano',        ['it-IT', 'Italia'],
-                     ['it-CH', 'Svizzera']],
- ['Magyar',          ['hu-HU']],
- ['Nederlands',      ['nl-NL']],
- ['Norsk bokmål',    ['nb-NO']],
- ['Polski',          ['pl-PL']],
- ['Português',       ['pt-BR', 'Brasil'],
-                     ['pt-PT', 'Portugal']],
- ['Română',          ['ro-RO']],
- ['Slovenčina',      ['sk-SK']],
- ['Suomi',           ['fi-FI']],
- ['Svenska',         ['sv-SE']],
- ['Türkçe',          ['tr-TR']],
- ['български',       ['bg-BG']],
- ['Pусский',         ['ru-RU']],
- ['Српски',          ['sr-RS']],
- ['한국어',            ['ko-KR']],
- ['中文',             ['cmn-Hans-CN', '普通话 (中国大陆)'],
-                     ['cmn-Hans-HK', '普通话 (香港)'],
-                     ['cmn-Hant-TW', '中文 (台灣)'],
-                     ['yue-Hant-HK', '粵語 (香港)']],
- ['日本語',           ['ja-JP']],
- ['Lingua latīna',   ['la']]];
+[['Deutsch',         ['de'],['Dutch Female']],
+ ['English',         ['en'],['US English Female']],
+ ['Español',         ['es'],['Spanish Latin American Female']],
+ ['Français',        ['fr'],['French Female']],
+ ['Italiano',        ['it'],['Italian Female']],
+ ['Polski',          ['pl'],['Polish Female']],
+ ['Português',       ['pt'],['Brazilian Portuguese Female']],
+ ['Svenska',         ['sv'],['Swedish Female']],
+ ['Türkçe',          ['tr'],['Turkish Female']],
+ ['Pусский',         ['ru'],['Russian Female']],
+ ['Српски',          ['sr'],['Serbian Male']],
+ ['한국어',            ['ko'],['Korean Female']],
+ ['中文',             ['zh-TW'],['Chinese Female']],
+ ['日本語',           ['ja'],['Japanese Female']],
+ ['Lingua latīna',   ['la'],['Latin Female']]];
 
 var final_transcript = '';
 var recognizing = false;
@@ -120,6 +74,11 @@ function FriendlyChat() {
   this.messageInput.addEventListener('keyup', buttonTogglingHandler);
   this.messageInput.addEventListener('change', buttonTogglingHandler);
 
+  for (var i = 0; i < langs.length; i++) {
+    select_language.options[i] = new Option(langs[i][0], i);
+  }
+  select_language.selectedIndex = 1;
+
   if (!('webkitSpeechRecognition' in window)) {
     console.log("Calling Upgrade");
   } else {
@@ -150,13 +109,18 @@ function FriendlyChat() {
   this.initFirebase();
 }
 
+function updateCountry() {
+  targetLanguage = langs[select_language.selectedIndex][1].toString();
+  targetSpeechSpeaker = langs[select_language.selectedIndex][2].toString();
+}
+
 var startButton = function(event) {
   if (recognizing) {
     recognition.stop();
     return;
   }
   final_transcript = '';
-  recognition.lang = select_dialect.value;
+  //recognition.lang = select_dialect.value;
   recognition.start();
   ignore_onend = false;
   start_img.src = '/images/mic-slash.gif';
@@ -183,14 +147,14 @@ FriendlyChat.prototype.loadMessages = function() {
   // Loads the last 12 messages and listen for new ones.
   var setMessage = function(data) {
     var val = data.val();
-    if (val.sourceLanguage === "en"){
+    if (val.sourceLanguage === targetLanguage){
       this.displayMessage(data.key, val.name, val.text, val.photoUrl, val.imageUrl)
     } else {
       axios.get(translateText_API,{
           params: {
               q:val.text,
               source:val.sourceLanguage,
-              target:"en"
+              target:targetLanguage
           }
       }).then(res => {
           console.log();
@@ -201,35 +165,20 @@ FriendlyChat.prototype.loadMessages = function() {
   this.messagesRef.limitToLast(12).on('child_added', setMessage);
   this.messagesRef.limitToLast(12).on('child_changed', setMessage);
 
-  // this.messagesRef.limitToLast(1).on('child_added', snapshot => console.log('WWWW', snapshot.val().text));
-
-  // This is go get the last item on list.
-  // this.messagesRef.limitToLast(1).on('child_added', snapshot => console.log('WWWW', snapshot.val()));
-
-  // if (!(this.auth.currentUser)){
-  //   this.messagesRef.limitToLast(1).on('child_added',
-  //     snapshot => responsiveVoice.speak(snapshot.val().text, "UK English Male", {volume: 5}));
-  // }
-
-  // var current_uid_on_data;
-  // console.log("starting");
   this.messagesRef.limitToLast(1).on('child_added', function(snapshot){
-    /// console.log(snapshot.val().uid);
-    // snapshot.val().uid;
     console.log(snapshot.val().text);
-
     if ((snapshot.val().uid !== firebase.auth().currentUser.uid)){
-      if (snapshot.val().sourceLanguage === "en"){
-        responsiveVoice.speak(snapshot.val().text, "US English Female", {volume: 5});
+      if (snapshot.val().sourceLanguage === targetLanguage){
+        responsiveVoice.speak(snapshot.val().text, targetSpeechSpeaker, {volume: 7});
       } else {
         axios.get(translateText_API,{
             params: {
                 q:snapshot.val().text,
                 source:snapshot.val().sourceLanguage,
-                target:"en"
+                target:targetLanguage
             }
         }).then(res => {
-            responsiveVoice.speak(res.data.data.translations[0].translatedText, "US English Female", {volume: 5});
+            responsiveVoice.speak(res.data.data.translations[0].translatedText, targetSpeechSpeaker, {volume: 7});
             console.log(res.data.data.translations[0].translatedText);
             //return res.data.data.translations[0].translatedText;
         }).catch( (error) => console.log('error', error));
@@ -261,14 +210,13 @@ FriendlyChat.prototype.saveMessage = function(e) {
             q:this.messageInput.value
         }
     }).then(res => {
-
       // Add a new message entry to the Firebase Database.
       this.messagesRef.push({
         uid: this.auth.currentUser.uid,
         name: currentUser.displayName,
         text: this.messageInput.value,
         photoUrl: currentUser.photoURL || '/images/profile_placeholder.png',
-        sourceLanguage: ((res.data.data.detections[0])[0]).language
+        sourceLanguage: ((res.data.data.detections[0])[0]).language //get the language that is being used in this text
       }).then(function() {
         // Clear message text field and SEND button state.
         FriendlyChat.resetMaterialTextfield(this.messageInput);

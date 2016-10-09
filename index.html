@@ -17,7 +17,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="description" content="Learn how to use the Firebase platform on the Web">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Friendly Chat</title>
+  <title>Hack Chat</title>
 
   <!-- Disable tap highlight on IE -->
   <meta name="msapplication-tap-highlight" content="no">
@@ -27,13 +27,13 @@
 
   <!-- Add to homescreen for Chrome on Android -->
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="application-name" content="Friendly Chat">
+  <meta name="application-name" content="Hack Chat">
   <meta name="theme-color" content="#303F9F">
 
   <!-- Add to homescreen for Safari on iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Friendly Chat">
+  <meta name="apple-mobile-web-app-title" content="Hack Chat">
   <meta name="apple-mobile-web-app-status-bar-style" content="#303F9F">
 
   <!-- Tile icon for Win8 -->
@@ -62,7 +62,7 @@
   <header class="mdl-layout__header mdl-color-text--white mdl-color--light-blue-700">
     <div class="mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-grid">
       <div class="mdl-layout__header-row mdl-cell mdl-cell--12-col mdl-cell--12-col-tablet mdl-cell--12-col-desktop">
-        <h3><i class="material-icons">chat_bubble_outline</i> Friendly Chat</h3>
+        <h3><i class="material-icons">chat_bubble_outline</i> Hack Chat</h3>
       </div>
       <div id="user-container">
         <div hidden id="user-pic"></div>
@@ -95,33 +95,25 @@
               Send
             </button>
           </form>
-          <form class="right">
-            <button id="start_button">
-            <img id="start_img" src="/images/mic.gif" alt="Start"></button>
-          </form>
-
+            <button id="start_button" class="right">
+            <img id="start_img" src="/images/mic.gif" alt="Start"></button>  
         </div>
-
         <div class="demo-card-wide mdl-card mdl-shadow--2dp">
             <div id="visual" class="mdl-card__title">
-
             </div>
         </div>
-
-
       </div>
 
       <div id="must-signin-snackbar" class="mdl-js-snackbar mdl-snackbar">
         <div class="mdl-snackbar__text"></div>
         <button class="mdl-snackbar__action" type="button"></button>
       </div>
-      <div id="div_language">
-        <select id="select_language" onchange="updateCountry()"></select>
-        &nbsp;&nbsp;
-        <select id="select_dialect"></select>
+      <div id="div_language" class="styled-select pink semi-square">
+          <select id="select_language" class="dropbtn" onchange="updateCountry()"></select>
       </div>
     </div>
   </main>
+  
 </div>
 
 <!-- Firebase -->
@@ -147,6 +139,7 @@
 <script src="scripts/d3.js"></script>
 <script src="scripts/microphone.js"></script>
 <script src="scripts/shared.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
 
 <script>
     // set the dimensions and margins of the graph

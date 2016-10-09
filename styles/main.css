@@ -27,6 +27,7 @@ main, #messages-card {
 }
 #messages-card {
   margin-top: 15px;
+  width: 100%;
 }
 .mdl-layout__header-row span {
   margin-left: 15px;
@@ -102,7 +103,7 @@ main, #messages-card {
 #message-form {
   display: flex;
   flex-direction: row;
-  width: calc(100% - 48px);
+  width: calc(100% - 50px);
   float: left;
 }
 #image-form {
@@ -158,7 +159,6 @@ main, #messages-card {
   padding: 0 6px 0 1px;
   min-width: 0;
 }
-
 #image-form #submitImage .material-icons {
   top: -1px;
 }
@@ -166,26 +166,10 @@ main, #messages-card {
   max-width: 300px;
   max-height: 200px;
 }
-
-
-#image-speaker #submitSpeaker {
-  width: auto;
-  padding: 0 6px 0 1px;
-  min-width: 0;
-}
-#image-speaker #submitSpeaker .material-icons {
-  top: -1px;
-}
-.message img {
-  max-width: 300px;
-  max-height: 200px;
-}
-
-
 #mediaCapture {
   display: none;
 }
-@media screen and (max-width: 610px) {
+@media screen and (max-width: 650px) {
   header {
     height: 113px;
     padding-bottom: 80px !important;
@@ -214,12 +198,40 @@ main, #messages-card {
   top: -1px;
   margin-right: 5px;
 }
+.right {
+  float: right;
+}
+#start_button {
+  border: 0;
+  background-color:transparent;
+  padding: 0;
+}
 
+.button {
+    background: -webkit-linear-gradient(top,#008dfd 0,#0370ea 100%);
+    border: 1px solid #076bd2;
+    border-radius: 3px;
+    color: #fff;
+    display: none;
+    font-size: 13px;
+    font-weight: bold;
+    line-height: 1.3;
+    padding: 8px 25px;
+    text-align: center;
+    text-shadow: 1px 1px 1px #076bd2;
+    letter-spacing: normal;
+  }
 
+  .mdl-layout__content {
+  background: #039be5 !important;
+}
 
+.mdl-layout__header {
+  background: #40c9ff !important; 
+}
 /* Style The Dropdown Button */
 .dropbtn {
-    background-color: #ffb6c1;;
+    background-color: #40c9ff;;
     color: white;
     padding: 16px;
     font-size: 16px;
@@ -263,5 +275,29 @@ main, #messages-card {
 
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
-    background-color: #E75480;
+    background-color: #303F9F;
 }
+
+.styled-select {
+   background: url(http://i62.tinypic.com/15xvbd5.png) no-repeat 96% 0;
+   height: 29px;
+   overflow: hidden;
+   width: 240px;
+}
+
+.styled-select select {
+   background: transparent;
+   border: none;
+   font-size: 14px;
+   height: 29px;
+   padding: 5px; /* If you add too much padding here, the options won't show in IE */
+   width: 268px;
+}
+
+.semi-square {
+   -webkit-border-radius: 5px;
+   -moz-border-radius: 5px;
+   border-radius: 5px;
+}
+
+.pink    { background-color: #303F9F; }
