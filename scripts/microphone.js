@@ -67,8 +67,20 @@ MicrophoneSample.prototype.onStream = function (stream) {
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.onresult = function (event) {
-        console.log(event)
+        console.log(event.results[0][0].transcript);
+
+        //$("#message").val(event.results[0][0].transcript).trigger('keyup').trigger('change');
+        //$("messages-card-container").trigger('change');
+        document.getElementById('message').value = event.results[0][0].transcript;
+        //$("#Submit").removeAttr('disabled');
     }
+    //$("#Submit").click(function () {
+    //    if(recognition.continuous == true)
+    //        recognition.continuous = false;
+    //    else
+    //        recognition.continuous = false;
+    //});
+
     recognition.start();
 
     requestAnimFrame(this.visualize.bind(this));
