@@ -109,6 +109,7 @@
 
                         </div>
                     </div>
+                    <audio id="audioElement" src="Google UK English Male"></audio>
                 </div>
                 <div id="must-signin-snackbar" class="mdl-js-snackbar mdl-snackbar">
                     <div class="mdl-snackbar__text"></div>
@@ -117,7 +118,6 @@
 
             </div>
         </main>
-
     </div>
 
     <!-- Firebase -->
@@ -159,7 +159,7 @@
                   "translate(" + margin.left + "," + margin.top + ")");
         //var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
         var y = d3.scaleLinear()
-            .domain([0, 255])
+            .domain([0, 260])
             .range([height, 0]);
         //svg.append("rect")
         //    .attr("width", "100%")

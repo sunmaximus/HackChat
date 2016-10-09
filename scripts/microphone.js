@@ -61,14 +61,21 @@ MicrophoneSample.prototype.onStreamError = function (e) {
 
 
 
-var NumOfBins = 50;
+var NumOfBins = 200;
+
+var synth = window.speechSynthesis;
+
+var line = d3.line()
+         .curve(d3.curveBasis)
+         .x(function (d, i) { return x(i); })
+         .y(function (d) { return y(d); });
+
+var hueScale = d3.scaleLinear()
+           .domain([0, NumOfBins-1])
+           .range([0, 360]);
 
 MicrophoneSample.prototype.visualize = function () {
-    
-    
-    //this.canvas.width = this.WIDTH;
-    //this.canvas.height = this.HEIGHT;
-    //var drawContext = this.canvas.getContext('2d');
+
 
     var times = new Uint8Array(NumOfBins);
 
@@ -84,21 +91,35 @@ MicrophoneSample.prototype.visualize = function () {
     ////console.log(times);
     this.analyser.getByteFrequencyData(times);
 
-    //y = d3.scaleLinear()
-    //        .domain([0, d3.max(times)])
-    //        .range([height, 0]);
-
+  
     var line = d3.line()
            .curve(d3.curveBasis)
            .x(function (d, i) { return x(i); })
            .y(function (d) { return y(d); });
+    svg.selectAll(".bar").remove();
+
+
+    var bar = svg.selectAll(".bar")
+        .data(times)
+      .enter().append("g")
+        .attr("class", "bar")
+        .attr("transform", function (d,i) { return "translate(" + x(i) + "," + y(d+4) + ")"; });
 
 
 
-    svg.selectAll(".line").remove();
-    //console.log(times);
-    svg.append("path")
- .attr("class", "line")
- .attr("d", line(times));
+    bar.append("rect")
+        .attr("x", 1)
+        .attr("width", x(1)- 1)
+        .attr("height", function (d) { return height - y(d+100); })
+    .attr("fill", function (d, i) { return d3.hsl(hueScale(i), 1, 0.5) });
+
+
    requestAnimFrame(this.visualize.bind(this));
 };
+
+function palette(min, max) {
+    var d = (max - min) / 7;
+    return d3.scale.threshold()
+        .range(['#add8e6', '#73c1fa', '#68a3fe', '#5e84ff', '#5064ff', '#3b40ff', '#0000ff'])
+        .domain([min + 1 * d, min + 2 * d, min + 3 * d, min + 4 * d, min + 5 * d, min + 6 * d, min + 7 * d]);
+}
