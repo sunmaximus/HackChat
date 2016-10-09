@@ -66,7 +66,7 @@ MicrophoneSample.prototype.onStream = function (stream) {
     var recognition = new webkitSpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = true;
-    recognition.start();
+    //recognition.start();
     recognition.onresult = function (event) {
         console.log(event.results[0][0].transcript);
 
