@@ -109,7 +109,7 @@
 
                         </div>
                     </div>
-                    <audio id="audioElement" src="Google UK English Male"></audio>
+               
                 </div>
                 <div id="must-signin-snackbar" class="mdl-js-snackbar mdl-snackbar">
                     <div class="mdl-snackbar__text"></div>
@@ -142,8 +142,20 @@
     <script src="scripts/d3.js"></script>
     <script src="scripts/microphone.js"></script>
     <script src="scripts/shared.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script>
+
+
+
+
+        $(document).ready(function () {
+            console.log("ready!");
+        });
+
+
+      
+
+
         // set the dimensions and margins of the graph
         var margin = { top: 0, right: 0, bottom: 0, left: 0 },
             width = document.getElementById('visual').offsetWidth - margin.left - margin.right,

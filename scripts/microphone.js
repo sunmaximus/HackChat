@@ -62,6 +62,15 @@ MicrophoneSample.prototype.onStream = function (stream) {
                .range([180, 240]);
 
     // Setup a timer to visualize some stuff.
+
+    var recognition = new webkitSpeechRecognition();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.onresult = function (event) {
+        console.log(event)
+    }
+    recognition.start();
+
     requestAnimFrame(this.visualize.bind(this));
 };
 
