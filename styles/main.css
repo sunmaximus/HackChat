@@ -27,7 +27,6 @@ main, #messages-card {
 }
 #messages-card {
   margin-top: 15px;
-  width: 100%;
 }
 .mdl-layout__header-row span {
   margin-left: 15px;
@@ -159,6 +158,7 @@ main, #messages-card {
   padding: 0 6px 0 1px;
   min-width: 0;
 }
+
 #image-form #submitImage .material-icons {
   top: -1px;
 }
@@ -166,6 +166,22 @@ main, #messages-card {
   max-width: 300px;
   max-height: 200px;
 }
+
+
+#image-speaker #submitSpeaker {
+  width: auto;
+  padding: 0 6px 0 1px;
+  min-width: 0;
+}
+#image-speaker #submitSpeaker .material-icons {
+  top: -1px;
+}
+.message img {
+  max-width: 300px;
+  max-height: 200px;
+}
+
+
 #mediaCapture {
   display: none;
 }
@@ -199,13 +215,8 @@ main, #messages-card {
   margin-right: 5px;
 }
 
-.mdl-layout__content {
-  background: #ff69b4 !important;
-}
 
-.mdl-layout__header {
-  background: #ffb6c1 !important; 
-}
+
 /* Style The Dropdown Button */
 .dropbtn {
     background-color: #ffb6c1;;
@@ -254,7 +265,3 @@ main, #messages-card {
 .dropdown:hover .dropbtn {
     background-color: #E75480;
 }
-
-
-
-

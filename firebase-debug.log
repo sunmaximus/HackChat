@@ -1,0 +1,28 @@
+[debug] ----------------------------------------------------------------------
+[debug] Command:      /usr/local/Cellar/node/6.6.0/bin/node /usr/local/bin/firebase serve
+[debug] CLI Version:  3.0.8
+[debug] Platform:     darwin
+[debug] Node Version: v6.6.0
+[debug] Time:         Sat Oct 08 2016 20:01:21 GMT-0400 (EDT)
+[debug] ----------------------------------------------------------------------
+[debug] 
+[info] Starting Firebase development server...
+[info] 
+[info] Project Directory: /Users/sonnguyen/Desktop/web
+[info] Public Directory: ./
+[info] 
+[info] Server listening at: http://localhost:5000
+[debug] ----------------------------------------------------------------------
+[debug] Command:      /usr/local/Cellar/node/6.6.0/bin/node /usr/local/bin/firebase serve
+[debug] CLI Version:  3.0.8
+[debug] Platform:     darwin
+[debug] Node Version: v6.6.0
+[debug] Time:         Sat Oct 08 2016 20:07:53 GMT-0400 (EDT)
+[debug] ----------------------------------------------------------------------
+[debug] 
+[info] Starting Firebase development server...
+[info] 
+[info] Project Directory: /Users/sonnguyen/Desktop/web
+[info] Public Directory: ./
+[info] 
+[info] Server listening at: http://localhost:5000

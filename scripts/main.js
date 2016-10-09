@@ -15,6 +15,81 @@
  */
 'use strict';
 
+const API_KEY = "AIzaSyBOHmgokLOaN-k-CfYWFJSZLsUbs0DG6Z0";
+const translateText_API = `https://www.googleapis.com/language/translate/v2?key=${API_KEY}`;
+const detectLanguage_API = `https://www.googleapis.com/language/translate/v2/detect?key=${API_KEY}`;
+
+var isMicOn = false;
+
+var langs =
+[['Afrikaans',       ['af-ZA']],
+ ['Bahasa Indonesia',['id-ID']],
+ ['Bahasa Melayu',   ['ms-MY']],
+ ['Català',          ['ca-ES']],
+ ['Čeština',         ['cs-CZ']],
+ ['Deutsch',         ['de-DE']],
+ ['English',         ['en-AU', 'Australia'],
+                     ['en-CA', 'Canada'],
+                     ['en-IN', 'India'],
+                     ['en-NZ', 'New Zealand'],
+                     ['en-ZA', 'South Africa'],
+                     ['en-GB', 'United Kingdom'],
+                     ['en-US', 'United States']],
+ ['Español',         ['es-AR', 'Argentina'],
+                     ['es-BO', 'Bolivia'],
+                     ['es-CL', 'Chile'],
+                     ['es-CO', 'Colombia'],
+                     ['es-CR', 'Costa Rica'],
+                     ['es-EC', 'Ecuador'],
+                     ['es-SV', 'El Salvador'],
+                     ['es-ES', 'España'],
+                     ['es-US', 'Estados Unidos'],
+                     ['es-GT', 'Guatemala'],
+                     ['es-HN', 'Honduras'],
+                     ['es-MX', 'México'],
+                     ['es-NI', 'Nicaragua'],
+                     ['es-PA', 'Panamá'],
+                     ['es-PY', 'Paraguay'],
+                     ['es-PE', 'Perú'],
+                     ['es-PR', 'Puerto Rico'],
+                     ['es-DO', 'República Dominicana'],
+                     ['es-UY', 'Uruguay'],
+                     ['es-VE', 'Venezuela']],
+ ['Euskara',         ['eu-ES']],
+ ['Français',        ['fr-FR']],
+ ['Galego',          ['gl-ES']],
+ ['Hrvatski',        ['hr_HR']],
+ ['IsiZulu',         ['zu-ZA']],
+ ['Íslenska',        ['is-IS']],
+ ['Italiano',        ['it-IT', 'Italia'],
+                     ['it-CH', 'Svizzera']],
+ ['Magyar',          ['hu-HU']],
+ ['Nederlands',      ['nl-NL']],
+ ['Norsk bokmål',    ['nb-NO']],
+ ['Polski',          ['pl-PL']],
+ ['Português',       ['pt-BR', 'Brasil'],
+                     ['pt-PT', 'Portugal']],
+ ['Română',          ['ro-RO']],
+ ['Slovenčina',      ['sk-SK']],
+ ['Suomi',           ['fi-FI']],
+ ['Svenska',         ['sv-SE']],
+ ['Türkçe',          ['tr-TR']],
+ ['български',       ['bg-BG']],
+ ['Pусский',         ['ru-RU']],
+ ['Српски',          ['sr-RS']],
+ ['한국어',            ['ko-KR']],
+ ['中文',             ['cmn-Hans-CN', '普通话 (中国大陆)'],
+                     ['cmn-Hans-HK', '普通话 (香港)'],
+                     ['cmn-Hant-TW', '中文 (台灣)'],
+                     ['yue-Hant-HK', '粵語 (香港)']],
+ ['日本語',           ['ja-JP']],
+ ['Lingua latīna',   ['la']]];
+
+var final_transcript = '';
+var recognizing = false;
+var ignore_onend;
+var start_timestamp;
+var recognition;
 // Initializes FriendlyChat.
 function FriendlyChat() {
   this.checkSetup();
@@ -32,24 +107,60 @@ function FriendlyChat() {
   this.signInButton = document.getElementById('sign-in');
   this.signOutButton = document.getElementById('sign-out');
   this.signInSnackbar = document.getElementById('must-signin-snackbar');
+  this.micButton = document.getElementById('start_button');
 
   // Saves message on form submit.
   this.messageForm.addEventListener('submit', this.saveMessage.bind(this));
   this.signOutButton.addEventListener('click', this.signOut.bind(this));
   this.signInButton.addEventListener('click', this.signIn.bind(this));
+  this.micButton.addEventListener('click', this.startButton);
 
   // Toggle for the button.
   var buttonTogglingHandler = this.toggleButton.bind(this);
   this.messageInput.addEventListener('keyup', buttonTogglingHandler);
   this.messageInput.addEventListener('change', buttonTogglingHandler);
 
-  // Events for image upload.
-  this.submitImageButton.addEventListener('click', function() {
-    this.mediaCapture.click();
-  }.bind(this));
-  this.mediaCapture.addEventListener('change', this.saveImageMessage.bind(this));
+  if (!('webkitSpeechRecognition' in window)) {
+    console.log("Calling Upgrade");
+  } else {
+    start_button.style.display = 'inline-block';
+    recognition = new webkitSpeechRecognition();
+    recognition.continuous     = true;
+    recognition.interimResults = true;
 
+    recognition.onstart = function() {
+      recognizing = true;
+      start_img.src = 'mic-animate.gif';
+      console.log("Recognition started");
+    };
+    recognition.onresult = function(event){
+      console.log("Speech On Result");
+      console.log(event.results);
+    };
+    recognition.onerror = function(e) {
+      start_img.src = 'mic.gif';
+      ignore_onend = true;
+      console.log("Error");
+    };
+
+    recognition.onend = function() {
+      console.log("Speech recognition ended");
+    };
+  }
   this.initFirebase();
+}
+
+var startButton = function(event) {
+  if (recognizing) {
+    recognition.stop();
+    return;
+  }
+  final_transcript = '';
+  recognition.lang = select_dialect.value;
+  recognition.start();
+  ignore_onend = false;
+  start_img.src = '/images/mic-slash.gif';
+  start_timestamp = event.timeStamp;
 }
 
 // Sets up shortcuts to Firebase features and initiate firebase auth.
@@ -72,7 +183,20 @@ FriendlyChat.prototype.loadMessages = function() {
   // Loads the last 12 messages and listen for new ones.
   var setMessage = function(data) {
     var val = data.val();
-    this.displayMessage(data.key, val.name, val.text, val.photoUrl, val.imageUrl);
+    if (val.sourceLanguage === "en"){
+      this.displayMessage(data.key, val.name, val.text, val.photoUrl, val.imageUrl)
+    } else {
+      axios.get(translateText_API,{
+          params: {
+              q:val.text,
+              source:val.sourceLanguage,
+              target:"en"
+          }
+      }).then(res => {
+          console.log();
+          this.displayMessage(data.key, val.name, res.data.data.translations[0].translatedText, val.photoUrl, val.imageUrl);
+      }).catch( (error) => console.log('error', error));
+    }
   }.bind(this);
   this.messagesRef.limitToLast(12).on('child_added', setMessage);
   this.messagesRef.limitToLast(12).on('child_changed', setMessage);
@@ -92,8 +216,25 @@ FriendlyChat.prototype.loadMessages = function() {
   this.messagesRef.limitToLast(1).on('child_added', function(snapshot){
     /// console.log(snapshot.val().uid);
     // snapshot.val().uid;
+    console.log(snapshot.val().text);
+
     if ((snapshot.val().uid !== firebase.auth().currentUser.uid)){
-      responsiveVoice.speak(snapshot.val().text, "UK English Male", {volume: 5});
+      if (snapshot.val().sourceLanguage === "en"){
+        responsiveVoice.speak(snapshot.val().text, "US English Female", {volume: 5});
+      } else {
+        axios.get(translateText_API,{
+            params: {
+                q:snapshot.val().text,
+                source:snapshot.val().sourceLanguage,
+                target:"en"
+            }
+        }).then(res => {
+            responsiveVoice.speak(res.data.data.translations[0].translatedText, "US English Female", {volume: 5});
+            console.log(res.data.data.translations[0].translatedText);
+            //return res.data.data.translations[0].translatedText;
+        }).catch( (error) => console.log('error', error));
+      }
+      
       console.log('What is happening?');
     }
 
@@ -111,79 +252,33 @@ FriendlyChat.prototype.loadMessages = function() {
 FriendlyChat.prototype.saveMessage = function(e) {
   e.preventDefault();
 
-  //console.log(this.messageList.value);
-
   // Check that the user entered a message and is signed in.
   if (this.messageInput.value && this.checkSignedInWithMessage()) {
     var currentUser = this.auth.currentUser;
-    // Add a new message entry to the Firebase Database.
-    this.messagesRef.push({
-      uid: this.auth.currentUser.uid,
-      name: currentUser.displayName,
-      text: this.messageInput.value,
-      photoUrl: currentUser.photoURL || '/images/profile_placeholder.png'
-    }).then(function() {
-      // Clear message text field and SEND button state.
-      FriendlyChat.resetMaterialTextfield(this.messageInput);
-      this.toggleButton();
-    }.bind(this)).catch(function(error) {
-      console.error('Error writing new message to Firebase Database', error);
-    });
-  }
-};
 
-// Sets the URL of the given img element with the URL of the image stored in Firebase Storage.
-FriendlyChat.prototype.setImageUrl = function(imageUri, imgElement) {
-  // If the image is a Firebase Storage URI we fetch the URL.
-  if (imageUri.startsWith('gs://')) {
-    imgElement.src = FriendlyChat.LOADING_IMAGE_URL; // Display a loading image first.
-    this.storage.refFromURL(imageUri).getMetadata().then(function(metadata) {
-      imgElement.src = metadata.downloadURLs[0];
-    });
-  } else {
-    imgElement.src = imageUri;
-  }
-};
+    axios.get(detectLanguage_API, {
+        params: {
+            q:this.messageInput.value
+        }
+    }).then(res => {
 
-// Saves a new message containing an image URI in Firebase.
-// This first saves the image in Firebase storage.
-FriendlyChat.prototype.saveImageMessage = function(event) {
-  var file = event.target.files[0];
+      // Add a new message entry to the Firebase Database.
+      this.messagesRef.push({
+        uid: this.auth.currentUser.uid,
+        name: currentUser.displayName,
+        text: this.messageInput.value,
+        photoUrl: currentUser.photoURL || '/images/profile_placeholder.png',
+        sourceLanguage: ((res.data.data.detections[0])[0]).language
+      }).then(function() {
+        // Clear message text field and SEND button state.
+        FriendlyChat.resetMaterialTextfield(this.messageInput);
+        this.toggleButton();
+      }.bind(this)).catch(function(error) {
+        console.error('Error writing new message to Firebase Database', error);
+      });
 
-  // Clear the selection in the file picker input.
-  this.imageForm.reset();
+    }).catch( (error) => console.log('error', error));
 
-  // Check if the file is an image.
-  if (!file.type.match('image.*')) {
-    var data = {
-      message: 'You can only share images',
-      timeout: 2000
-    };
-    this.signInSnackbar.MaterialSnackbar.showSnackbar(data);
-    return;
-  }
-
-  // Check if the user is signed-in
-  if (this.checkSignedInWithMessage()) {
-
-    // We add a message with a loading icon that will get updated with the shared image.
-    var currentUser = this.auth.currentUser;
-    this.messagesRef.push({
-      name: currentUser.displayName,
-      imageUrl: FriendlyChat.LOADING_IMAGE_URL,
-      photoUrl: currentUser.photoURL || '/images/profile_placeholder.png'
-    }).then(function(data) {
-      // Upload the image to Firebase Storage.
-      this.storage.ref(currentUser.uid + '/' + Date.now() + '/' + file.name)
-          .put(file, {contentType: file.type})
-          .then(function(snapshot) {
-            // Get the file's Storage URI and update the chat message placeholder.
-            var filePath = snapshot.metadata.fullPath;
-            data.update({imageUrl: this.storage.ref(filePath).toString()});
-          }.bind(this)).catch(function(error) {
-            console.error('There was an error uploading a file to Firebase Storage:', error);
-          });
-    }.bind(this));
   }
 };
 
@@ -267,6 +362,7 @@ FriendlyChat.LOADING_IMAGE_URL = 'https://www.google.com/images/spin-32.gif';
 
 // Displays a Message in the UI.
 FriendlyChat.prototype.displayMessage = function(key, name, text, picUrl, imageUri) {
+  
   var div = document.getElementById(key);
   // If an element for that message does not exists yet we create it.
   if (!div) {
@@ -328,3 +424,4 @@ FriendlyChat.prototype.checkSetup = function() {
 window.onload = function() {
   window.friendlyChat = new FriendlyChat();
 };
+
