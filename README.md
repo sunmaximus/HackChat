@@ -1,9 +1,7 @@
-# Firebase: Build a Real Time Web Chat App Codelab - Final code
+## Inspiration
+Internet connects every one around the world and Facebook can provide a way for everyone to communicate with one another. But no one has came up with a tool to provide a solution to language barriers. We want to build a solution where a person living in one part of the world can communicate through our product with another person across the globe without having to learn another language. This experience will be as easy and as fast as texting your own family members.
 
-This folder contains the final code of the [Firebase: Build a Real Time Web Chat App Codelab](https://codelabs.developers.google.com/codelabs/firebase-web/).
+## What it does
+HackChat is an international group chat that allows everyone around the world to communicate with one another in any language that the user has chosen. If a user is in Japan and can only speak in Japanese, he/she can still communicate and interact with everyone in this world group chat by either speaking or writing the messages in Japanese. Our product has the ability to recognize and detect speech from various languages and make a 1-to-1 translation to another available language. Which gives the user the ability to receive their response from other users back in their chosen language. 
 
-You can use this app directly if you'd like to see the finished app but before you do follow the "Create a Firebase Project and Setup" step of the [Codelab instructions](https://codelabs.developers.google.com/codelabs/firebase-web/)
- 
-Before deploying make sure you change the `<STORAGE_BUCKET>` placeholder in the [storage.rules](./storage.rules) file. 
- 
-If you'd like to follow the step by step codelab start with the [web-start](../web-start) directory.
+In additional to speech recognition, our software has the text-to-speech ability which allows the user to hear their messages/responses in the language they chose. HackChat can individually help each user by translating every text messages into a message that is readable by the user despite the language that those messages were sent from. 
